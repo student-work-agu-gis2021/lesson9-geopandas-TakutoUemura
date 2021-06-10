@@ -47,7 +47,8 @@ print(poly.geom_type)
 # **Insert the polygon into a GeoDataFrame called `geo`:**
 
 # Create an empty GeoDataFrame
-geo = None
+geo = gpd.GeoDataFrame(index=[0], columns=['geometry'])
+geo['geometry'] = poly
 # YOUR CODE HERE 3
 
 # CODE FOR TESTING YOUR SOLUTION
