@@ -45,7 +45,20 @@ assert len(grouped.groups) == data["userid"].nunique(), "Number of groups should
 # YOUR CODE HERE 4 to set movements
 import pandas as pd
 from shapely.geometry import LineString, Point
-movements=None
+movements = gpd.GeoDataFrame(columns=['userid', 'geometry'])
+count = 0
+for key, group in grouped:
+    group = group.sort_values('timestamp')
+    if len(group['geometry'])>=2:
+        line = (LineString(list(group['geometry'])))
+    else:
+        line = None
+    count = count + 1
+    movements.at[count, 'userid'] = key
+    movements.at[count, 'geometry'] = line
+
+movements.crs = CRS.from_epsg(32735)
+
 # CODE FOR TESTING YOUR SOLUTION
 
 #Check the result
@@ -59,6 +72,12 @@ print(movements["geometry"].head())
 # - Calculate the lenghts of the lines into a new column called ``distance`` in ``movements`` GeoDataFrame.
 
 # YOUR CODE HERE 5 to calculate distance
+def cal_distance(x):
+    if x['geometry'] is None:
+        return None
+    else:
+        return x['geometry'].length
+movements['distance'] = movements.apply(cal_distance, axis=1)
 
 # CODE FOR TESTING YOUR SOLUTION
 
